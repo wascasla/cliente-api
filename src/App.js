@@ -9,6 +9,8 @@ import Navegacion from './componentes/layout/Navegacion';
 import Clientes from './componentes/clientes/Clientes';
 import Productos from './componentes/productos/Productos';
 import Pedidos from './componentes/pedidos/Pedidos';
+import NuevoCliente from './componentes/clientes/NuevoCliente';
+import EditarCliente from './componentes/clientes/EditarCliente';
 
 function App() {
   return (
@@ -22,6 +24,12 @@ function App() {
           <main className='caja-contenido col-9'>
             <Switch>
               <Route exact path='/' component={Clientes} />
+              <Route exact path='/clientes/nuevo' component={NuevoCliente} />
+              <Route
+                exact
+                path='/clientes/editar/:id'
+                component={EditarCliente}
+              />
 
               <Route exact path='/productos' component={Productos} />
 
