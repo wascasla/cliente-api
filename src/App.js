@@ -11,6 +11,8 @@ import Productos from './componentes/productos/Productos';
 import Pedidos from './componentes/pedidos/Pedidos';
 import NuevoCliente from './componentes/clientes/NuevoCliente';
 import EditarCliente from './componentes/clientes/EditarCliente';
+import NuevoProducto from './componentes/productos/NuevoProducto';
+import EditarProducto from './componentes/productos/EditarProducto';
 
 function App() {
   return (
@@ -32,6 +34,12 @@ function App() {
               />
 
               <Route exact path='/productos' component={Productos} />
+              <Route exact path='/productos/nuevo' component={NuevoProducto} />
+              <Route
+                exact
+                path='/productos/editar/:id'
+                component={EditarProducto}
+              />
 
               <Route exact path='/pedidos' component={Pedidos} />
             </Switch>

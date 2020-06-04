@@ -4,6 +4,7 @@ import React, { useState, useEffect, Fragment } from 'react';
 import clienteAxios from '../../config/axios';
 import Cliente from './Cliente';
 import { Link } from 'react-router-dom';
+import Spinner from '../layout/Spinner';
 
 const Clientes = () => {
   const [clientes, guardarClientes] = useState([]);
@@ -19,6 +20,8 @@ const Clientes = () => {
   useEffect(() => {
     consultarAPI();
   }, [clientes]);
+
+  if (!clientes.length) return <Spinner />;
 
   return (
     <Fragment>
