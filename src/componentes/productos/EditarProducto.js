@@ -144,7 +144,7 @@ const EditarProducto = (props) => {
             type='submit'
             className='btn btn-azul'
             value='Editar Producto'
-            // disabled={validarProducto()}
+          // disabled={validarProducto()}
           />
         </div>
       </form>
@@ -152,4 +152,4 @@ const EditarProducto = (props) => {
   );
 };
 
-export default EditarProducto;
+export default withRouter(EditarProducto);
