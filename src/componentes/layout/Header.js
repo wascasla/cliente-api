@@ -2,11 +2,11 @@ import React, { useContext } from 'react';
 import { CRMContext } from '../../context/CRMContext';
 import { withRouter } from 'react-router-dom';
 
-const Header = () => {
+const Header = (props) => {
 
   const [auth, guardarAuth] = useContext(CRMContext);
 
-  const cerrarSesion = (props) => {
+  const cerrarSesion = () => {
     // auth.auth = false y el token se remueve
     guardarAuth({
       token: '',
