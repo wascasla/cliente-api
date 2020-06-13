@@ -1,25 +1,59 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, useContext } from 'react';
 
 // import cliente axios
 import clienteAxios from '../../config/axios';
 import Cliente from './Cliente';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Spinner from '../layout/Spinner';
 
-const Clientes = () => {
+//importar el context
+import { CRMContext } from '../../context/CRMContext';
+
+const Clientes = (props) => {
+
+  //Trabajar con el state
+  // clientes = state, guardarClientes = funcion para guardar el state
   const [clientes, guardarClientes] = useState([]);
 
-  // query a la API
-  const consultarAPI = async () => {
-    const clientesConsulta = await clienteAxios.get('/clientes');
+  // utilizar valores del context
+  const [auth, guardarAuth] = useContext(CRMContext);
 
-    //colocarl el resultado en el state
-    guardarClientes(clientesConsulta.data);
-  };
+
 
   useEffect(() => {
-    consultarAPI();
+
+    if (auth.token !== '') {
+      // query a la API
+      const consultarAPI = async () => {
+        try {
+          const clientesConsulta = await clienteAxios.get('/clientes', {
+            headers: {
+              Authorization: `Bearer ${auth.token}`
+            }
+          });
+
+          //colocar el resultado en el state
+          guardarClientes(clientesConsulta.data);
+        } catch (error) {
+          //Error de autorizacion token vencido o no valido
+          if (error.response.status === 500) {
+            props.history.push('/iniciar-sesion');
+          }
+        }
+      }
+
+      consultarAPI();
+    } else {
+      props.history.push('/iniciar-sesion')
+    }
+
+
   }, [clientes]);
+
+  // si el state esta como false
+  if (!auth.auth) {
+    props.history.push('/iniciar-sesion');
+  }
 
   if (!clientes.length) return <Spinner />;
 
@@ -41,4 +75,4 @@ const Clientes = () => {
   );
 };
 
-export default Clientes;
+export default withRouter(Clientes);

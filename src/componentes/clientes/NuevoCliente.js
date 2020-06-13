@@ -1,7 +1,10 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useContext } from 'react';
 import clienteAxios from '../../config/axios';
 import Swal from 'sweetalert2';
 import { withRouter } from 'react-router-dom';
+
+//importar el context
+import { CRMContext } from '../../context/CRMContext';
 
 const NuevoCliente = ({ history }) => {
   //cliente = state, guardarCliente = funcion para guardar el state
@@ -12,6 +15,9 @@ const NuevoCliente = ({ history }) => {
     email: '',
     telefono: '',
   });
+
+  // utilizar valores del context
+  const [auth, guardarAuth] = useContext(CRMContext);
 
   // leer los datos del formulario
   const actualizarState = (e) => {
@@ -45,7 +51,11 @@ const NuevoCliente = ({ history }) => {
     e.preventDefault();
 
     // enviar peticion
-    clienteAxios.post('/clientes', cliente).then((res) => {
+    clienteAxios.post('/clientes', cliente, {
+      headers: {
+        Authorization: `Bearer ${auth.token}`
+      }
+    }).then((res) => {
       //se ejecutan el then cuando la conexion con la rest api es exitosa code 200
       // validar si hay errores de mongo
       if (res.data.code === 11000) {
@@ -56,13 +66,18 @@ const NuevoCliente = ({ history }) => {
           text: 'Email duplicado',
         });
       } else {
-        console.log(res.data);
+
         Swal.fire('Se agrego el cliente', res.data.mensaje, 'success');
         //redireccionar
         history.push('/');
       }
     });
   };
+
+  //verificar si el usuario esta autenticado o no
+  if (!auth.auth && (localStorage.getItem('token') === auth.token)) {
+    history.push('/iniciar-sesion');
+  }
 
   return (
     <Fragment>

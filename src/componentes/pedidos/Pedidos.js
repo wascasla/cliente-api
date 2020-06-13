@@ -1,22 +1,50 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState, Fragment, useContext } from 'react';
 import clienteAxios from '../../config/axios';
 import DetallesPedido from './DetallesPedido';
+import { withRouter } from 'react-router-dom';
 
-const Pedidos = () => {
+//importar el context
+import { CRMContext } from '../../context/CRMContext';
+
+const Pedidos = (props) => {
 
   const [pedidos, setPedidos] = useState([]);
 
+  // utilizar valores del context
+  const [auth, guardarAuth] = useContext(CRMContext);
+
   useEffect(() => {
 
-    const consultarApi = async () => {
-      // obtener los pedidos
-      const resultado = await clienteAxios.get('/pedidos');
+    if (auth.token !== '') {
 
-      setPedidos(resultado.data);
+      const consultarApi = async () => {
+        try {
+          // obtener los pedidos
+          const resultado = await clienteAxios.get('/pedidos', {
+            headers: {
+              Authorization: `Bearer ${auth.token}`
+            }
+          });
+
+          setPedidos(resultado.data);
+        } catch (error) {
+          //Error de autorizacion token vencido o no valido
+          if (error.response.status === 500) {
+            props.history.push('/iniciar-sesion');
+          }
+        }
+      }
+
+      consultarApi();
+    } else {
+      props.history.push('/iniciar-sesion')
     }
-
-    consultarApi();
   }, [])
+
+  // si el state esta como false
+  if (!auth.auth) {
+    props.history.push('/iniciar-sesion');
+  }
 
   return (
     <Fragment>
@@ -36,4 +64,4 @@ const Pedidos = () => {
   )
 };
 
-export default Pedidos;
+export default withRouter(Pedidos);

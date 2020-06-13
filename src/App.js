@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
 
 //Routing
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -14,39 +14,50 @@ import EditarCliente from './componentes/clientes/EditarCliente';
 import NuevoProducto from './componentes/productos/NuevoProducto';
 import EditarProducto from './componentes/productos/EditarProducto';
 import NuevoPedido from './componentes/pedidos/NuevoPedido';
+import Login from './componentes/auth/Login';
+
+import { CRMProvider, CRMContext } from './context/CRMContext';
 
 function App() {
+
+  // utilizar context en el componente
+  const [auth, guardarAuth] = useContext(CRMContext);
+
   return (
     <Router>
       <Fragment>
-        <Header />
+        <CRMProvider value={[auth, guardarAuth]}>
+          <Header />
 
-        <div className='grid contenedor contenido-principal'>
-          <Navegacion />
+          <div className='grid contenedor contenido-principal'>
+            <Navegacion />
 
-          <main className='caja-contenido col-9'>
-            <Switch>
-              <Route exact path='/' component={Clientes} />
-              <Route exact path='/clientes/nuevo' component={NuevoCliente} />
-              <Route
-                exact
-                path='/clientes/editar/:id'
-                component={EditarCliente}
-              />
+            <main className='caja-contenido col-9'>
+              <Switch>
+                <Route exact path='/' component={Clientes} />
+                <Route exact path='/clientes/nuevo' component={NuevoCliente} />
+                <Route
+                  exact
+                  path='/clientes/editar/:id'
+                  component={EditarCliente}
+                />
 
-              <Route exact path='/productos' component={Productos} />
-              <Route exact path='/productos/nuevo' component={NuevoProducto} />
-              <Route
-                exact
-                path='/productos/editar/:id'
-                component={EditarProducto}
-              />
+                <Route exact path='/productos' component={Productos} />
+                <Route exact path='/productos/nuevo' component={NuevoProducto} />
+                <Route
+                  exact
+                  path='/productos/editar/:id'
+                  component={EditarProducto}
+                />
 
-              <Route exact path='/pedidos' component={Pedidos} />
-              <Route exact path='/pedidos/nuevo/:id' component={NuevoPedido} />
-            </Switch>
-          </main>
-        </div>
+                <Route exact path='/pedidos' component={Pedidos} />
+                <Route exact path='/pedidos/nuevo/:id' component={NuevoPedido} />
+
+                <Route exact path='/iniciar-sesion' component={Login} />
+              </Switch>
+            </main>
+          </div>
+        </CRMProvider>
       </Fragment>
     </Router>
   );
